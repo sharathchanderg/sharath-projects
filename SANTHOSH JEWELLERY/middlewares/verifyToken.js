@@ -2,34 +2,36 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 exports.verifyToken = async function (req, res, next) {
-  try {
+  try 
+  {
     let expired = null;
     const bearerHeader = req.headers["authorization"];
     let bearerToken = "";
-    if (bearerHeader) {
+    if (bearerHeader) 
+    {
       bearerToken = bearerHeader.split(" ")[1];
     }
-    if (bearerToken) {
-      jwt.verify(
-        bearerToken,
-        "process.env.SJ_VERIFY_TOKEN",
-        function (err, decoded) {
-          if (err) {
-            try {
+    if (bearerToken) 
+    {
+      jwt.verify(bearerToken,"process.env.SJ_VERIFY_TOKEN",function (err, decoded) {
+          if (err) 
+          {
+            try 
+            {
               expired = err;
               res
                 .status(401)
                 .json({ status: 401, message: "token expired", expired });
-            } catch (err) {
+            } catch (err) 
+            {
               res
                 .status(401)
                 .json({ status: 401, message: "token expired", err });
             }
           }
-          if (decoded) {
-            console.log(decoded)
+          if (decoded) 
+          {
             req.admin = decoded._id;
-          
             next();
           }
         }

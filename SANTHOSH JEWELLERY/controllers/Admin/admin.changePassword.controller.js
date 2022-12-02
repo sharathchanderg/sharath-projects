@@ -1,6 +1,7 @@
 const bcrypt = require("bcryptjs");
 const AdminSchema = require("../../models/Admin/adminModel");
 
+//change password
 exports.changePassword = async (req, res) => {
   try {
     const password = req.body.password

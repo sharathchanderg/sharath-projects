@@ -16,13 +16,19 @@ const adminSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    department_id: String,
+    role: String,
     status: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",
     },
-    profile_image: String,
+    avatar: String,
+    ability: [
+      {
+        action: String,
+        subject: String
+      }
+    ],
     created_by: String,
     created_log_date: String,
     modified_by: {

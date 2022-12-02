@@ -17,9 +17,9 @@ exports.addAdmin = function (req, res) {
         username: req.body.username,
         email: req.body.email,
         password: bcrypt.hashSync(req.body.password, 10),
-        department_id: req.body.department_id,
+        role: req.body.role,
         status: req.body.status,
-        profile_image: req.file.path,
+        avatar: req.file.path,
         created_by: req.body.created_by,
         created_log_date: new Date().toISOString().slice(0, 10),
       }).save(function (err, data) {
@@ -60,7 +60,6 @@ exports.adminLogin = async function (req, res) {
             profile_image: adminFound.profile_image,
             status: adminFound.status,
           };
-          console.log(adminDetails);
           const response = {
             success: "ok",
             data: adminDetails,
