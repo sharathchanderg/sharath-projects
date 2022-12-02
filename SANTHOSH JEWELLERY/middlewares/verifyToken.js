@@ -1,34 +1,52 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-expired = null;
 exports.verifyToken = async function (req, res, next) {
-  const token = await req.header["authorization"];
-  if (token) {
-    bearerToken = await token.split(" ")[1];
-  }
-  if (bearerToken) {
-    jwt.verify(
-      bearerToken,
-      "process.env.SJ_VERIFY_TOKEN",
-      function (err, decode) {
-        try {
-          expired = err;
-          let lastDate = expired.expiredAt.toLocaleDateString();
-          let lastTime = expired.expiredAt.toLocaleTimeString();
-          let loggedOut = `logged out ${lastDate} at ${lastTime}`;
-          res
-            .status(400)
-            .json({ message: "token expired", Error: expired, loggedOut });
-        } catch (err) {
-          res
-            .status(400)
-            .json({ message: "token expired", Error: err, loggedOut });
+  try {
+    let expired = null;
+    const bearerHeader = req.headers["authorization"];
+    let bearerToken = "";
+    if (bearerHeader) {
+      bearerToken = bearerHeader.split(" ")[1];
+    }
+    if (bearerToken) {
+      jwt.verify(
+        bearerToken,
+        "process.env.SJ_VERIFY_TOKEN",
+        function (err, decoded) {
+          if (err) {
+            try {
+              expired = err;
+              res
+                .status(401)
+                .json({ status: 401, message: "token expired", expired });
+            } catch (err) {
+              res
+                .status(401)
+                .json({ status: 401, message: "token expired", err });
+            }
+          }
+          if (decoded) {
+            console.log(decoded)
+            req.admin = decoded._id;
+          
+            next();
+          }
         }
-        if (decode) {
-          req.admin = decode._id;
-        }
-      }
-    );
+      );
+    } else {
+      res
+        .status(401)
+        .json({ status: 401, message: "Bearer token not defined" });
+    }
+  } catch (err) {
+    console.log("eror", err);
+    if (err.name === "JsonWebTokenError" || err.name === "TokenExpiredError") {
+      return res.status(401).json({ status: 401, message: err.message });
+    }
+    res
+      .status(401)
+      .json({ status: 401, message: "Internal Server Error", error: err });
   }
 };
+

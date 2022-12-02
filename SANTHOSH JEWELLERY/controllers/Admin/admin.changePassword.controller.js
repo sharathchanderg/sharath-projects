@@ -1,42 +1,46 @@
 const bcrypt = require("bcryptjs");
 const AdminSchema = require("../../models/Admin/adminModel");
 
-const securePassword = function (password) {
-  try {
-    return (hashpassword = bcrypt.hashSync(password, 10));
-  } catch (err) {
-    res.status(400).json({ success: false, message: err });
-  }
-};
-
-//change password
 exports.changePassword = async (req, res) => {
   try {
-    const newpassword = req.body.newpassword;
-    const verifyPassword = req.body.verifyPassword;
-    if (newpassword === newpassword) {
-      const adminFound = await AdminSchema.findOne({ _id: req.admin });
-      if (adminFound) {
-        const newPassword = await securePassword(verifyPassword);
-        await AdminSchema.findOneAndUpdate(
-          { _id: req.admin },
-          { $set: { password: newPassword } }
-        );
-        res
-          .status(200)
+    const password = req.body.password
+    const adminData = await AdminSchema.findOne({_id:req.admin})
+    const passwordMatched = await bcrypt.compare(password, adminData.password);
+    if(passwordMatched){
+      const newpassword = req.body.newpassword;
+      const confirmpassword = req.body.confirmpassword;
+      if (newpassword === confirmpassword) {
+        const adminFound = await AdminSchema.findOne({ _id: req.admin });
+        if (adminFound) {
+          const newPassword = bcrypt.hashSync(confirmpassword, 10);
+          await AdminSchema.findOneAndUpdate(
+            { _id: req.admin },
+            { $set: { password: newPassword } }
+          );
+          res
+            .status(200)
+            .json({
+              success: true,
+              messsage: "your password updated successfully",
+            });
+        }
+      } else {
+        res 
+          .status(400)
           .json({
-            success: true,
-            messsage: "your password updated successfully",
+            success: false,
+            messsage: "you entered password is not matched",
           });
       }
-    } else {
-      res
+    }else {
+      res 
         .status(400)
         .json({
           success: false,
-          messsage: "you entered password is not matched",
+          messsage: "you entered password is not matched with old password",
         });
     }
+    
   } catch (err) {
     res.status(400).json({ success: false, messsage: err });
   }

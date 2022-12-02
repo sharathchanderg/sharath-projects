@@ -21,67 +21,69 @@ exports.addAdmin = function (req, res) {
         status: req.body.status,
         profile_image: req.file.path,
         created_by: req.body.created_by,
-        created_log_date: new Date().toISOString(),
+        created_log_date: new Date().toISOString().slice(0, 10),
       }).save(function (err, data) {
         if (err) {
-          return res
-            .status(400)
-            .json({ success: false, message: err});
+          return res.status(400).json({ success: false, message: err });
         }
         return res
-            .status(200)
-            .json({ success:true, message:"successfully inserted" });
+          .status(200)
+          .json({ success: true, message: "successfully inserted" });
+      });
     });
-  })} catch (err) {
-    res.status(400).json({ success: false, message: err });
-  }
-}
-
-//generating jwt token
-const generate_token = function (id) {
-  try {
-    return (token = jwt.sign({ _id: id }, "process.env.SJ_VERIFY_TOKEN"));
   } catch (err) {
-    res.status(400).send({ success: false, message: err });
+    res.status(400).json({ success: false, message: err });
   }
 };
 
 //login to admin
 exports.adminLogin = async function (req, res) {
-try {
+   try {
     const username = req.body.username;
     const password = req.body.password;
-    console.log(password)
-    console.log(username)
     const adminFound = await AdminSchema.findOne({ username: username });
-    console.log(adminFound)
     if (adminFound) {
       const isMatch = await bcrypt.compare(password, adminFound.password);
-      console.log(isMatch)
       if (isMatch) {
-        const token =  generate_token(adminFound._id);
-        console.log(token)
-        const adminDetails = {
-          id: adminFound._id,
-          name: adminFound.name,
-          username: adminFound.username,
-          email: adminFound.email, 
-          department_id: adminFound.department_id,
-          profile_image: adminFound.profile_image,
-          status: adminFound.status,
-        };
-        console.log(adminDetails)
-        return res.status(200).json({
-          success: true,
-          message: ok,
-          data: adminDetails,
-          token: token,
-        });
+        const token = jwt.sign(
+          { _id: adminFound._id },
+          "process.env.SJ_VERIFY_TOKEN",
+          { expiresIn: "24h" }
+        );
+        if (token) {
+          const adminDetails = {
+            id: adminFound._id,
+            name: adminFound.name,
+            username: adminFound.username,
+            email: adminFound.email,
+            department_id: adminFound.department_id,
+            profile_image: adminFound.profile_image,
+            status: adminFound.status,
+          };
+          console.log(adminDetails);
+          const response = {
+            success: "ok",
+            data: adminDetails,
+            token: token,
+          };
+          return res.status(200).json(response);
+        } else {
+          res
+            .status(400)
+            .send({
+              success: false,
+              message: "error in token generation or sending token"
+            });
+        }
       } else {
         res
           .status(400)
-          .send({ success: false, message: "you entered wrong credentials" });
+          .send({ success: false, message: "you entered wrong password" });
       }
+    } else {
+      res
+        .status(400)
+        .send({ success: false, message: "you entered wrong username" });
     }
   } catch (err) {
     res.status(400).json({ success: false, message: err });
@@ -91,7 +93,7 @@ try {
 //get admin profile
 exports.getAdmin = async (req, res) => {
   try {
-    const adminFound = await AdminSchema.findById({ _id: req.body._id });
+    const adminFound = await AdminSchema.findById({ _id: req.admin });  
     if (adminFound) {
       res.status(200).json({ success: true, message: adminFound });
     } else {
@@ -106,7 +108,7 @@ exports.getAdmin = async (req, res) => {
 exports.updateAdmin = async function (req, res) {
   try {
     let adminFound = await AdminSchema.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.admin },
       {
         name: req.body.name,
         username: req.body.username,
@@ -115,7 +117,7 @@ exports.updateAdmin = async function (req, res) {
         status: req.body.status,
         profile_image: req.file.path,
         modified_by: req.body.modified_by,
-        modified_log_date: new Date().toISOString(),
+        modified_log_date: new Date().toISOString().slice(0, 10),
       }
     );
     if (adminFound) {
@@ -125,7 +127,7 @@ exports.updateAdmin = async function (req, res) {
     } else {
       res
         .status(400)
-        .json({ success: false, message: "unable update profile" });
+        .json({ success: false, message: "unable to update profile" });
     }
   } catch (err) {
     res.status(400).json({ success: false, message: err });
