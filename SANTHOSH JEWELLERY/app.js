@@ -24,9 +24,12 @@ mongoose
 app.get("/",(req,res)=>{
   res.status(200).send("I am listening from server");
 })
-const adminRoute = require("./routers/Admin/admin.router");
 
-app.use("/santhosh-jewellery", adminRoute);
+const adminRoute = require("./routers/Admin/admin.router");
+const employeeRoute = require("./routers/Employees/empRoute");
+
+app.use("/santhosh-jewellery", adminRoute);//for admin
+app.use("/santhosh-jewellery", employeeRoute);//for employee
 
 app.listen(port, () => {
   console.log(`server running on http://127.0.0.1:${port}`); 

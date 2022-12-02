@@ -1,4 +1,4 @@
-const AdminSchema = require("../../models/Admin/adminModel");
+const Schema = require("../../models/schema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
@@ -6,21 +6,25 @@ require("dotenv").config();
 //adding admin
 exports.addAdmin = function (req, res) {
   try {
-    AdminSchema.findOne({ username: req.body.username }).exec((err, admin) => {
+    Schema.findOne({ email: req.body.email }).exec((err, admin) => {
       if (admin) {
         return res
           .status(400)
-          .json({ success: false, message: "admin/username is already exist" });
+          .json({ success: false, message: "admin/email is already exist" });
       }
-      const addedAdmin = new AdminSchema({
-        name: req.body.name,
-        username: req.body.username,
+      const adminAdded = new Schema({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
         email: req.body.email,
+        phone: req.body.phone,
+        address: req.body.address,
+        state: req.body.state,
+        zipcode: req.body.zipcode,
+        country: req.body.country,
+        avatar: req.file.path,role,
         password: bcrypt.hashSync(req.body.password, 10),
-        role: req.body.role,
-        status: req.body.status,
-        avatar: req.file.path,
         created_by: req.body.created_by,
+        role: req.body.role,
         created_log_date: new Date().toISOString().slice(0, 10),
       }).save(function (err, data) {
         if (err) {
@@ -38,10 +42,10 @@ exports.addAdmin = function (req, res) {
 
 //login to admin
 exports.adminLogin = async function (req, res) {
-   try {
-    const username = req.body.username;
+  try {
+    const email = req.body.email;
     const password = req.body.password;
-    const adminFound = await AdminSchema.findOne({ username: username });
+    const adminFound = await Schema.findOne({ email: email });
     if (adminFound) {
       const isMatch = await bcrypt.compare(password, adminFound.password);
       if (isMatch) {
@@ -53,26 +57,25 @@ exports.adminLogin = async function (req, res) {
         if (token) {
           const adminDetails = {
             id: adminFound._id,
-            name: adminFound.name,
-            username: adminFound.username,
+            first_name: adminFound.first_name,
+            last_name: adminFound.last_name,
             email: adminFound.email,
-            department_id: adminFound.department_id,
-            profile_image: adminFound.profile_image,
-            status: adminFound.status,
+            phone: adminFound.phone,
+            address: adminFound.address,
+            state: adminFound.state,
+            zipcode: adminFound.zipcode,
+            country: adminFound.country,
+            avatar: adminFound.avatar,
+            role: adminFound.role,
           };
-          const response = {
-            success: "ok",
-            data: adminDetails,
-            token: token,
-          };
-          return res.status(200).json(response);
+          return res
+            .status(200)
+            .json({ success: true, adminDetails, token: token });
         } else {
-          res
-            .status(400)
-            .send({
-              success: false,
-              message: "error in token generation or sending token"
-            });
+          res.status(400).send({
+            success: false,
+            message: "error in token generation or sending token",
+          });
         }
       } else {
         res
@@ -92,7 +95,7 @@ exports.adminLogin = async function (req, res) {
 //get admin profile
 exports.getAdmin = async (req, res) => {
   try {
-    const adminFound = await AdminSchema.findById({ _id: req.admin });  
+    const adminFound = await Schema.findById({ _id: req.admin });
     if (adminFound) {
       res.status(200).json({ success: true, message: adminFound });
     } else {
@@ -106,16 +109,20 @@ exports.getAdmin = async (req, res) => {
 //update admin  profile
 exports.updateAdmin = async function (req, res) {
   try {
-    let adminFound = await AdminSchema.findOneAndUpdate(
+    let adminFound = await Schema.findOneAndUpdate(
       { _id: req.admin },
       {
-        name: req.body.name,
-        username: req.body.username,
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
         email: req.body.email,
-        department_id: req.body.department_id,
-        status: req.body.status,
-        profile_image: req.file.path,
+        phone: req.body.phone,
+        address: req.body.address,
+        state: req.body.state,
+        zipcode: req.body.zipcode,
+        country: req.body.country,
+        avatar: req.file.path,
         modified_by: req.body.modified_by,
+        role: req.body.role,
         modified_log_date: new Date().toISOString().slice(0, 10),
       }
     );
@@ -132,3 +139,9 @@ exports.updateAdmin = async function (req, res) {
     res.status(400).json({ success: false, message: err });
   }
 };
+
+
+// password: bcrypt.hashSync(req.body.password, 10),
+//         role: req.body.role,
+//         status: req.body.status,
+//         avatar: req.file.path,
