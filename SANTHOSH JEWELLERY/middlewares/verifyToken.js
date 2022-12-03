@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
+//jwt token verification for the every request assigned
 exports.verifyToken = async function (req, res, next) {
   try 
   {

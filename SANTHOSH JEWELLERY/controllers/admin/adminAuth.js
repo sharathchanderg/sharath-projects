@@ -1,4 +1,4 @@
-const Schema = require("../../models/schema");
+const Schema = require("../../models/adminEmp/adminEmpSchema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
@@ -6,7 +6,7 @@ require("dotenv").config();
 //adding admin
 exports.addAdmin = function (req, res) {
   try {
-    Schema.findOne({ email: req.body.email }).exec((err, admin) => {
+  Schema.findOne({ email: req.body.email }).exec((err, admin) => {
       if (admin) {
         return res
           .status(400)
@@ -21,7 +21,8 @@ exports.addAdmin = function (req, res) {
         state: req.body.state,
         zipcode: req.body.zipcode,
         country: req.body.country,
-        avatar: req.file.path,role,
+        avatar: req.file.path,
+        role: req.body.role,
         password: bcrypt.hashSync(req.body.password, 10),
         created_by: req.body.created_by,
         role: req.body.role,
@@ -34,7 +35,7 @@ exports.addAdmin = function (req, res) {
           .status(200)
           .json({ success: true, message: "successfully inserted" });
       });
-    });
+    })
   } catch (err) {
     res.status(400).json({ success: false, message: err });
   }
@@ -70,7 +71,7 @@ exports.adminLogin = async function (req, res) {
           };
           return res
             .status(200)
-            .json({ success: true, adminDetails, token: token });
+            .json({ success: true, token: token, status:"your successfully logged in" });
         } else {
           res.status(400).send({
             success: false,
@@ -85,7 +86,7 @@ exports.adminLogin = async function (req, res) {
     } else {
       res
         .status(400)
-        .send({ success: false, message: "you entered wrong username" });
+        .send({ success: false, message: "you entered wrong email" });
     }
   } catch (err) {
     res.status(400).json({ success: false, message: err });
@@ -120,9 +121,9 @@ exports.updateAdmin = async function (req, res) {
         state: req.body.state,
         zipcode: req.body.zipcode,
         country: req.body.country,
-        avatar: req.file.path,
-        modified_by: req.body.modified_by,
         role: req.body.role,
+        avatar: req.file.path,       
+        modified_by: req.body.modified_by,
         modified_log_date: new Date().toISOString().slice(0, 10),
       }
     );
@@ -140,8 +141,19 @@ exports.updateAdmin = async function (req, res) {
   }
 };
 
+//get admin profile
+exports.deleteAdmin = async (req, res) => {
+  try {
+    const adminFound = await Schema.findById({ _id: req.admin });
+    if (adminFound) {
+      res.status(200).json({ success: true, message: adminFound });
+    } else {
+      res.status(400).json({ success: false, message: "Bad request" });
+    }
+  } catch (err) {
+    res.status(400).json({ success: false, message: err });
+  }
+};
 
-// password: bcrypt.hashSync(req.body.password, 10),
-//         role: req.body.role,
-//         status: req.body.status,
-//         avatar: req.file.path,
+
+

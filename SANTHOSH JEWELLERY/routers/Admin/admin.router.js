@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
+//middlewares
 const verifyToken = require("../../middlewares/verifyToken");
 const imgeUpload = require("../../middlewares/multer");
 
-const adminController = require("../../controllers/Admin/admin.Auth.controller");
-const adminPasswordChange = require("../../controllers/Admin/admin.changePassword.controller")
+//controllers
+const adminController = require("../../controllers/admin/adminAuth");
+const adminPasswordChange = require("../../controllers/admin/adminChangePassword")
 
+//API requests
 router.post("/admin-add",imgeUpload.uploadImage.single('avatar'), adminController.addAdmin);
 router.post("/admin-login", adminController.adminLogin);
 router.put("/admin-changepassword", verifyToken.verifyToken, adminPasswordChange.changePassword);

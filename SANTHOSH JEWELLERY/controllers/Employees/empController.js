@@ -1,4 +1,4 @@
-const Schema = require("../../models/schema");
+const Schema = require("../../models/adminEmp/adminEmpSchema");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();

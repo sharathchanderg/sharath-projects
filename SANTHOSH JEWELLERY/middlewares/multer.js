@@ -9,6 +9,7 @@ const imageStorage = multer.diskStorage({
   },
 });
 
+//multer to post/put through form (images/files)
 exports.uploadImage = multer({
   storage: imageStorage,
   fileFilter: (req, file, cb) => {

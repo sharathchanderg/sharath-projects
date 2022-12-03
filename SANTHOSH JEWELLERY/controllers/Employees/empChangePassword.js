@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const Schema = require("../../models/schema");
+const Schema = require("../../models/adminEmp/adminEmpSchema");
 
 //change password
 exports.changePassword = async (req, res) => {
