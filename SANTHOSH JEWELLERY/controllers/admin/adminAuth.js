@@ -141,12 +141,12 @@ exports.updateAdmin = async function (req, res) {
   }
 };
 
-//get admin profile
-exports.deleteAdmin = async (req, res) => {
+//delete admin-employee profile
+exports.deleteAdminEmp = async (req, res) => {
   try {
-    const adminFound = await Schema.findById({ _id: req.admin });
-    if (adminFound) {
-      res.status(200).json({ success: true, message: adminFound });
+    const adminDeleted = await Schema.findByIdAndDelete({ _id: req.params.id });
+    if (adminDeleted) {
+      res.status(200).json({ success: true, message:"successfully deleted" });
     } else {
       res.status(400).json({ success: false, message: "Bad request" });
     }

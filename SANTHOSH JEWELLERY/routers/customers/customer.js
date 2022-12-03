@@ -7,6 +7,9 @@ const verifyToken = require("../../middlewares/verifyToken");
 //controllers
 const customerController = require("../../controllers/customers/customerController");
 
+//qr
+const customerQr = require("../../controllers/qrcode/qrcode")
+
 //API calls
 router.post(
   "/add-customer",
@@ -23,5 +26,9 @@ router.get(
   verifyToken.verifyToken,
   customerController.getCustomer
 );
-
+router.get(
+  "/customer-details-qr/:id",
+  
+  customerQr.customerQrCode
+);
 module.exports = router;
