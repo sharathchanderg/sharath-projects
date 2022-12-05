@@ -3,10 +3,12 @@ const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyparser = require("body-parser");
+const ejs = require("ejs");
 require("dotenv").config();
 const port = process.env.SJ_PORT;
 
 app.use(cors());
+app.set("view engine","ejs");
 app.use(bodyparser.json());
 app.use(express.json());
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -22,23 +24,22 @@ mongoose
   .catch(() => {
     console.log("Database not Connected!!");
   });
-app.get("/",(req,res)=>{
+app.get("/", (req, res) => {
   res.status(200).send("I am listening from server");
-})
+});
 
 //routers
-const adminRoute = require("./routers/admin/admin.router");//admin router
-const employeeRoute = require("./routers/Employees/empRoute");//employee router
-const customerRoute = require("./routers/customers/customer")//customer router
-const paymentRoute = require("./routers/payments/payments")
+const adminRoute = require("./routers/admin/admin.router"); //admin router
+const employeeRoute = require("./routers/Employees/empRoute"); //employee router
+const customerRoute = require("./routers/customers/customer"); //customer router
+const paymentRoute = require("./routers/payments/payments");
 
 //Final API endpoint to start
-app.use("/santhosh-jewellery", adminRoute);//for admin
-app.use("/santhosh-jewellery", employeeRoute);//for employee
-app.use("/santhosh-jewellery", customerRoute);//for customer
-app.use("/santhosh-jewellery", paymentRoute);//for payments
+app.use("/santhosh-jewellery", adminRoute); //for admin
+app.use("/santhosh-jewellery", employeeRoute); //for employee
+app.use("/santhosh-jewellery", customerRoute); //for customer
+app.use("/santhosh-jewellery", paymentRoute); //for payments
 
 app.listen(port, () => {
-  console.log(`server running on http://127.0.0.1:${port}`); 
+  console.log(`server running on http://127.0.0.1:${port}`);
 });
-  

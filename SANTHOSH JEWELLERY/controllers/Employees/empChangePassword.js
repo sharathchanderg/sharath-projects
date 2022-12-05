@@ -22,7 +22,7 @@ try {
           res.status(200).json({
             success: true,
             messsage: "your password updated successfully",
-          });
+          });  
         }
       } else {
         res.status(400).json({

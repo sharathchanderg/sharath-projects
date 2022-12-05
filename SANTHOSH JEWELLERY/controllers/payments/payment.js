@@ -1,9 +1,9 @@
 const razorpay = require("razorpay");
 const crypto = require("crypto");
-const ejs = require("ejs");
+const ejs = require("ejs"); 
 const express = require("express");
-const { param } = require("../../routers/admin/admin.router");
 const app = express();
+const { param } = require("../../routers/admin/admin.router");
 const dotenv = require("dotenv");
 dotenv.config();
 
