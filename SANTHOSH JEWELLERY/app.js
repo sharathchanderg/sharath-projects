@@ -30,13 +30,15 @@ app.get("/",(req,res)=>{
 const adminRoute = require("./routers/admin/admin.router");//admin router
 const employeeRoute = require("./routers/Employees/empRoute");//employee router
 const customerRoute = require("./routers/customers/customer")//customer router
+const paymentRoute = require("./routers/payments/payments")
 
 //Final API endpoint to start
 app.use("/santhosh-jewellery", adminRoute);//for admin
 app.use("/santhosh-jewellery", employeeRoute);//for employee
 app.use("/santhosh-jewellery", customerRoute);//for customer
+app.use("/santhosh-jewellery", paymentRoute);//for payments
 
 app.listen(port, () => {
   console.log(`server running on http://127.0.0.1:${port}`); 
 });
- 
+  

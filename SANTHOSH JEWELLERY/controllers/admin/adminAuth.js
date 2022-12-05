@@ -79,14 +79,10 @@ exports.adminLogin = async function (req, res) {
           });
         }
       } else {
-        res
-          .status(400)
-          .send({ success: false, message: "you entered wrong password" });
+        res.status(400).send({ success: false, message: "you entered wrong password" });
       }
     } else {
-      res
-        .status(400)
-        .send({ success: false, message: "you entered wrong email" });
+      res.status(400).send({ success: false, message: "you entered wrong email" });
     }
   } catch (err) {
     res.status(400).json({ success: false, message: err });
@@ -128,13 +124,9 @@ exports.updateAdmin = async function (req, res) {
       }
     );
     if (adminFound) {
-      res
-        .status(200)
-        .json({ success: true, message: "profile updated successfully" });
+      res.status(200).json({ success: true, message: "profile updated successfully" });
     } else {
-      res
-        .status(400)
-        .json({ success: false, message: "unable to update profile" });
+      res.status(400).json({ success: false, message: "unable to update profile" });
     }
   } catch (err) {
     res.status(400).json({ success: false, message: err });

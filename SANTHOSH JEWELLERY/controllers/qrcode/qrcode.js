@@ -6,12 +6,11 @@ exports.customerQrCode = async function (req, res) {
     const customerData = await customerSchema.findById({ _id: req.params.id });
     if (customerData) {
       let stJson = JSON.stringify(customerData);
-    //   qrcode.toString(stJson, { type: "utf8" }, 
-      qrcode.toDataURL(stJson, 
-      function (err, code) {
+      // qrcode.toString(stJson, { type: "utf8" },
+      qrcode.toDataURL(stJson, function (err, code) {
         if (err) res.status(400).json({ success: false, message: err });
         else
-          res.status(200).json({ code });
+          res.status(200).json({ success: true, message: "successfull", code });
       });
     } else {
       res
