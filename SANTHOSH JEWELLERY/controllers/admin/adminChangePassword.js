@@ -22,15 +22,15 @@ exports.changePassword = async (req, res) => {
             .status(200)
             .json({
               success: true,
-              messsage: "your password updated successfully",
+              messsage: "Your password has been successfully updated." ,
             });
         }
-      } else {
+      } else { 
         res 
           .status(400)
           .json({
             success: false,
-            messsage: "you entered password is not matched",
+            messsage: "The new-password does not correspond to the confirm-password. ",
           });
       }
     }else {
@@ -38,7 +38,7 @@ exports.changePassword = async (req, res) => {
         .status(400)
         .json({
           success: false,
-          messsage: "you entered password is not matched with old password",
+          messsage: "Password is wrong.",
         });
     }
     

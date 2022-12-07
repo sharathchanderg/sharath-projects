@@ -20,7 +20,7 @@ exports.addCustomer = async function (req, res) {
       } else {
         res
           .status(400)
-          .json({ success: true, message: "successfully inserted data", data });
+          .json({ success: true, message: "successfully inserted data" });
       }
     });
   } catch (err) {
@@ -68,12 +68,33 @@ exports.getCustomer = async function (req, res) {
     if (customerData) {
       res.status(400).json({
         success: true,
-        message: "success",customerData,
+        message: "success",
+        customerData
       });
     } else {
       res
         .status(400)
         .json({ success: false, message: "customer data not found" });
+    }
+  } catch (err) {
+    res.status(400).json({ success: false, message: err });
+  }
+};
+
+//getAll customer
+exports.getAllCustomer = async function (req, res) {
+  try {
+    const customerData = await customerSchema.find();
+    if (customerData) {
+      res.status(400).json({
+        success: true,
+        message:"successfull",
+        customerData,
+      });
+    } else {
+      res
+        .status(400)
+        .json({ success: false, message:"customer data not found" });
     }
   } catch (err) {
     res.status(400).json({ success: false, message: err });

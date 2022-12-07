@@ -3,35 +3,31 @@ require("dotenv").config();
 
 //jwt token verification for the every request assigned
 exports.verifyToken = async function (req, res, next) {
-  try 
-  {
+  try {
     let expired = null;
     const bearerHeader = req.headers["authorization"];
     let bearerToken = "";
-    if (bearerHeader) 
-    {
+    if (bearerHeader) {
       bearerToken = bearerHeader.split(" ")[1];
     }
-    if (bearerToken) 
-    {
-      jwt.verify(bearerToken,"process.env.SJ_VERIFY_TOKEN",function (err, decoded) {
-          if (err) 
-          {
-            try 
-            {
+    if (bearerToken) {
+      jwt.verify(
+        bearerToken,
+        "process.env.SJ_VERIFY_TOKEN",
+        function (err, decoded) {
+          if (err) {
+            try {
               expired = err;
               res
                 .status(401)
                 .json({ status: 401, message: "token expired", expired });
-            } catch (err) 
-            {
+            } catch (err) {
               res
                 .status(401)
                 .json({ status: 401, message: "token expired", err });
             }
           }
-          if (decoded) 
-          {
+          if (decoded) {
             req.admin = decoded._id;
             next();
           }
@@ -52,4 +48,3 @@ exports.verifyToken = async function (req, res, next) {
       .json({ status: 401, message: "Internal Server Error", error: err });
   }
 };
-

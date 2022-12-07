@@ -3,9 +3,8 @@ const Schema = require("../../models/adminEmp/adminEmpSchema");
 
 //change password
 exports.changePassword = async (req, res) => {
-try {
+  try {
     const password = req.body.password;
-    console.log(password)
     const newpassword = req.body.newpassword;
     const confirmpassword = req.body.confirmpassword;
     const empData = await Schema.findOne({ _id: req.admin });
@@ -21,21 +20,22 @@ try {
           );
           res.status(200).json({
             success: true,
-            messsage: "your password updated successfully",
-          });  
+            messsage: "Your password has been successfully updated.",
+          });
         }
       } else {
         res.status(400).json({
           success: false,
-          messsage: "you entered password is not matched",
+          messsage:
+            "The new-password does not correspond to the confirm-password.",
         });
       }
     } else {
       res.status(400).json({
         success: false,
-        messsage: "you entered password is not matched with old password",
+        messsage: "Password is wrong.",
       });
-    } 
+    }
   } catch (err) {
     res.status(400).json({ success: false, messsage: err });
   }

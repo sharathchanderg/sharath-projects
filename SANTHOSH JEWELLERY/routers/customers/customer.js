@@ -26,9 +26,15 @@ router.get(
   verifyToken.verifyToken,
   customerController.getCustomer
 );
+
 router.get(
-  "/customer-details-qr/:id",
-  
+  "/list-customers",
+  verifyToken.verifyToken,
+  customerController.getAllCustomer
+);
+
+router.get(
+  "/customer-details-qr/:id",                     
   customerQr.customerQrCode
 );
 module.exports = router;
